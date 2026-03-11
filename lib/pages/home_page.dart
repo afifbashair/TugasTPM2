@@ -13,15 +13,13 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(title: Text("Menu Utama")),
       body: ListView(
         children: [
-
           ListTile(
             title: Text("Data Kelompok"),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => KelompokPage()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => KelompokPage()));
             },
           ),
-
           ListTile(
             title: Text("Penjumlahan & Pengurangan"),
             onTap: () {
@@ -29,15 +27,13 @@ class HomePage extends StatelessWidget {
               //     MaterialPageRoute(builder: (_) => KalkulatorPage()));
             },
           ),
-
           ListTile(
             title: Text("Ganjil / Genap & Bilangan Prima"),
             onTap: () {
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (_) => BilanganPage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => CekbilanganPage()));
             },
           ),
-
           ListTile(
             title: Text("Jumlah Total Angka"),
             onTap: () {
@@ -45,23 +41,20 @@ class HomePage extends StatelessWidget {
               //     MaterialPageRoute(builder: (_) => JumlahAngkaPage()));
             },
           ),
-
           ListTile(
             title: Text("Stopwatch"),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => StopwatchPage()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => StopwatchPage()));
             },
           ),
-
           ListTile(
             title: Text("Luas & Volume Piramid"),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => PiramidPage()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => PiramidPage()));
             },
           ),
-
         ],
       ),
     );
