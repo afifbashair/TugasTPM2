@@ -49,8 +49,8 @@ class HomePage extends StatelessWidget {
           ListTile(
             title: Text("Stopwatch"),
             onTap: () {
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (_) => StopwatchPage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => StopwatchPage()));
             },
           ),
 
