@@ -57,8 +57,8 @@ class HomePage extends StatelessWidget {
           ListTile(
             title: Text("Luas & Volume Piramid"),
             onTap: () {
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (_) => PiramidPage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => PiramidPage()));
             },
           ),
 
