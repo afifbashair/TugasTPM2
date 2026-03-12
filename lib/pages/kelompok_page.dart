@@ -6,7 +6,7 @@ class KelompokPage extends StatelessWidget {
     {'username': 'Afif Maulana B', 'nim': '123210051'},
     {'username': 'Muhammad Harsin', 'nim': '123200014'},
     {'username': 'Syaidatul Munawwirah', 'nim': '123230036'},
-    {'username': 'Mada', 'nim': '123230000'},
+    {'username': 'Mada Soneta', 'nim': '123230184'},
   ];
 
   @override
@@ -26,6 +26,7 @@ class KelompokPage extends StatelessWidget {
               ),
               title: Text(user['username']!),
               subtitle: Text('NIM: ${user['nim']}'),
+              onTap: (){},
             ),
           );
         },
