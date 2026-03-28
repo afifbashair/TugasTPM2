@@ -27,7 +27,7 @@ class KelompokPage extends StatelessWidget {
               title: Text(user['username']!),
               subtitle: Text('NIM: ${user['nim']}'),
               onTap: (){},
-            ),
+            ), 
           );
         },
       ),

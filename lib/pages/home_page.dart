@@ -17,6 +17,45 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+    Widget menuItem(String title, IconData icon, VoidCallback onTap) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: Ink(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue, Colors.blueAccent],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 6,
+              offset: Offset(2, 4),
+            )
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 40, color: Colors.white),
+            SizedBox(height: 10),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,52 +82,40 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.logout))
         ],
         ),
-      body: ListView(
-        children: [
-          ListTile(
-            title: Text("Data Kelompok"),
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => KelompokPage()));
-            },
+        body: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            children: [
+              menuItem("Data Kelompok", Icons.group, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => KelompokPage()));
+              }),
+              menuItem("Kalkulator", Icons.calculate, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => KalkulatorPage()));
+              }),
+              menuItem("Cek Bilangan", Icons.numbers, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => CekbilanganPage()));
+              }),
+              menuItem("Jumlah Angka", Icons.summarize, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => JumlahbilanganPage()));
+              }),
+              menuItem("Stopwatch", Icons.timer, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => StopwatchPage()));
+              }),
+              menuItem("Piramid", Icons.change_history, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => PiramidPage()));
+              }),
+            ],
           ),
-          ListTile(
-            title: Text("Penjumlahan & Pengurangan"),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => KalkulatorPage()));
-            },
-          ),
-          ListTile(
-            title: Text("Ganjil / Genap & Bilangan Prima"),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => CekbilanganPage()));
-            },
-          ),
-          ListTile(
-            title: Text("Jumlah Total Angka"),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => JumlahbilanganPage()));
-            },
-          ),
-          ListTile(
-            title: Text("Stopwatch"),
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => StopwatchPage()));
-            },
-          ),
-          ListTile(
-            title: Text("Luas & Volume Piramid"),
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => PiramidPage()));
-            },
-          ),
-        ],
-      ),
+        ),
     );
   }
 }

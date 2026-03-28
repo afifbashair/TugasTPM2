@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:ui';
 
 class StopwatchPage extends StatefulWidget {
   const StopwatchPage({Key? key}) : super(key: key);
@@ -10,89 +11,161 @@ class StopwatchPage extends StatefulWidget {
 
 class _StopwatchPageState extends State<StopwatchPage> {
   late Stopwatch _stopwatch;
-  late Timer _timer;
+  Timer? _timer;
+
+  // WAKTU AWAL 
+  Duration initialTime = const Duration(
+    hours: 23,
+    minutes: 59, 
+    seconds: 55);
 
   @override
   void initState() {
     super.initState();
     _stopwatch = Stopwatch();
+
+    // langsung set waktu awal
+    _stopwatch = Stopwatch()..start();
+    _stopwatch.stop();
   }
 
-  void _startStopwatch() {
+  void _start() {
     if (!_stopwatch.isRunning) {
       _stopwatch.start();
-      _timer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
+      _timer = Timer.periodic(const Duration(milliseconds: 30), (_) {
         setState(() {});
       });
     }
   }
 
-  void _stopStopwatch() {
+  void _stop() {
     if (_stopwatch.isRunning) {
       _stopwatch.stop();
-      _timer.cancel();
+      _timer?.cancel();
       setState(() {});
     }
   }
 
-  void _resetStopwatch() {
+  void _reset() {
     _stopwatch.reset();
     setState(() {});
   }
 
-  String _formattedTime() {
-    final elapsed = _stopwatch.elapsed;
-    final hour    = elapsed.inHours.remainder(24).toString().padLeft(2, '0');
-    final minutes = elapsed.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds = elapsed.inSeconds.remainder(60).toString().padLeft(2, '0');
-    final milliseconds =
-        (elapsed.inMilliseconds.remainder(1000) ~/ 10).toString().padLeft(2, '0');
-    return '$hour:$minutes:$seconds.$milliseconds';
+  // 🔥 WAKTU = elapsed + initialTime
+  Duration get currentTime => initialTime + _stopwatch.elapsed;
+
+  String formatTime() {
+    final t = currentTime;
+
+    final h = t.inHours.remainder(24).toString().padLeft(2, '0');
+    final m = t.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final s = t.inSeconds.remainder(60).toString().padLeft(2, '0');
+    final ms =
+        (t.inMilliseconds.remainder(1000) ~/ 10).toString().padLeft(2, '0');
+
+    return "$h:$m:$s.$ms";
   }
 
   @override
   void dispose() {
-    if (_stopwatch.isRunning) {
-      _timer.cancel();
-    }
+    _timer?.cancel();
     super.dispose();
+  }
+
+  Widget tombol(String text, IconData icon, Color color, VoidCallback onTap) {
+    return ElevatedButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon),
+      label: Text(text),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Stopwatch'),
+        title: const Text("Stopwatch Modern"),
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.indigo, Colors.blue],
+            ),
+          ),
+        ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              _formattedTime(),
-              style: const TextStyle(
-                fontSize: 60,
-                fontWeight: FontWeight.bold,
-                fontFeatures: [FontFeature.tabularFigures()],
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Card(
+            elevation: 10,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(25),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.timer, size: 60, color: Colors.blue),
+
+                  const SizedBox(height: 20),
+
+                  // ⏱️ DISPLAY WAKTU
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: Text(
+                      formatTime(),
+                      key: ValueKey(formatTime()),
+                      style: const TextStyle(
+                        fontSize: 45,
+                        fontWeight: FontWeight.bold,
+                        fontFeatures: [FontFeature.tabularFigures()],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      tombol(
+                        _stopwatch.isRunning ? "Stop" : "Start",
+                        _stopwatch.isRunning
+                            ? Icons.pause
+                            : Icons.play_arrow,
+                        _stopwatch.isRunning
+                            ? Colors.red
+                            : Colors.green,
+                        _stopwatch.isRunning ? _stop : _start,
+                      ),
+
+                      const SizedBox(width: 15),
+
+                      tombol(
+                        "Reset",
+                        Icons.refresh,
+                        Colors.grey,
+                        _reset,
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  Text(
+                    "Start dari: ${initialTime.inHours % 24} jam ${initialTime.inMinutes % 60} menit ${initialTime.inSeconds % 60} detik",
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: _stopwatch.isRunning ? _stopStopwatch : _startStopwatch,
-                  child: Text(_stopwatch.isRunning ? 'Stop' : 'Start'),
-                ),
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: _resetStopwatch,
-                  child: const Text('Reset'),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
