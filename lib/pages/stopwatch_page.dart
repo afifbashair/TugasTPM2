@@ -15,9 +15,9 @@ class _StopwatchPageState extends State<StopwatchPage> {
 
   // WAKTU AWAL 
   Duration initialTime = const Duration(
-    hours: 23,
-    minutes: 59, 
-    seconds: 55);
+    hours: 0,
+    minutes: 0, 
+    seconds: 0);
 
   @override
   void initState() {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HariWetonPage extends StatefulWidget {
   const HariWetonPage({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class _HariWetonPageState extends State<HariWetonPage> {
 
   void hitung() {
     if (selectedDate == null) {
-      setState(() => error = "Tanggal harus dipilih");
+      setState(() => error = "Silakan pilih tanggal terlebih dahulu");
       return;
     }
 
@@ -30,64 +31,145 @@ class _HariWetonPageState extends State<HariWetonPage> {
     });
   }
 
+  String formatTanggal() {
+    if (selectedDate == null) return "Belum dipilih";
+    return DateFormat('dd MMMM yyyy').format(selectedDate!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Hari Weton"),
+        title: const Text("Hari & Weton"),
+        centerTitle: true,
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.green, Colors.lightGreenAccent],
+              colors: [Colors.green, Colors.teal],
             ),
           ),
         ),
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.calendar_today, size: 60),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Card(
+              elevation: 10,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.calendar_month,
+                        size: 70, color: Colors.green),
 
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 10),
 
-                  ElevatedButton(
-                    onPressed: () async {
-                      DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime(2100),
-                      );
-                      setState(() => selectedDate = picked);
-                    },
-                    child: const Text("Pilih Tanggal"),
-                  ),
+                    const Text(
+                      "Cek Hari & Weton",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
 
-                  if (error != null)
-                    Text(error!, style: const TextStyle(color: Colors.red)),
+                    const SizedBox(height: 20),
 
-                  const SizedBox(height: 10),
+                    // 📅 Tanggal yang dipilih
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        formatTanggal(),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
 
-                  ElevatedButton(onPressed: hitung, child: const Text("Hitung")),
+                    const SizedBox(height: 15),
 
-                  const SizedBox(height: 20),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        DateTime? picked = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime(2100),
+                        );
+                        setState(() => selectedDate = picked);
+                      },
+                      icon: const Icon(Icons.date_range),
+                      label: const Text("Pilih Tanggal"),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 12),
+                      ),
+                    ),
 
-                  Text(hasil, style: const TextStyle(fontSize: 22)),
+                    if (error != null) ...[
+                      const SizedBox(height: 10),
+                      Text(error!,
+                          style: const TextStyle(color: Colors.red)),
+                    ],
 
-                  const SizedBox(height: 10),
+                    const SizedBox(height: 15),
 
-                  const Text("Syarat:\n- Pilih tanggal terlebih dahulu",
-                      style: TextStyle(fontSize: 12)),
-                ],
+                    ElevatedButton.icon(
+                      onPressed: hitung,
+                      icon: const Icon(Icons.calculate),
+                      label: const Text("Hitung"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    // ✨ HASIL
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.teal.shade50,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Hasil",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            hasil.isEmpty ? "-" : hasil,
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Syarat:\n"
+                        "- Pilih tanggal terlebih dahulu\n"
+                        "- Tanggal harus valid\n"
+                        "- Rentang tahun 1900 - 2100",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
