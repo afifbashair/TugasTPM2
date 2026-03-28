@@ -6,6 +6,10 @@ import 'package:berhitung_app/pages/cekbilangan_page.dart';
 import 'package:berhitung_app/pages/jumlahbilangan_page.dart';
 import 'package:berhitung_app/pages/stopwatch_page.dart';
 import 'package:berhitung_app/pages/piramid_page.dart';
+import 'package:berhitung_app/pages/hijriyah_page.dart';
+import 'package:berhitung_app/pages/saka_page.dart';
+import 'package:berhitung_app/pages/hariweton_page.dart';
+import 'package:berhitung_app/pages/umur_page.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -60,7 +64,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Menu Utama"),
+        title: const Text("BerhitungQu"),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [const Color.fromARGB(255, 64, 115, 211), const Color.fromARGB(255, 64, 35, 129)],
+            ),
+          ),
+        ),
+      
         actions: [
         Center(
           child: Padding(
@@ -112,6 +124,22 @@ class _HomePageState extends State<HomePage> {
               menuItem("Piramid", Icons.change_history, () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (_) => PiramidPage()));
+              }),
+              menuItem("Cek Hari & Weton", Icons.calendar_today, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => HariWetonPage()));
+              }),
+              menuItem("Hitung Umur", Icons.cake, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => UmurPage()));
+              }),
+              menuItem("Konversi Hijriyah", Icons.mosque, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => HijriyahPage()));
+              }),
+              menuItem("Tanggal Saka", Icons.event, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => SakaPage()));
               }),
             ],
           ),
