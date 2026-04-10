@@ -198,6 +198,7 @@ class _KalkulatorPageState extends State<KalkulatorPage> {
                       child: Text(
                         "Syarat Input:\n"
                         "- Tidak boleh kosong\n"
+                        "- maksimal 16 angka"
                         "- Harus berupa angka\n"
                         "- Bisa bilangan desimal\n"
                         "- Contoh: 10 atau 3.5",
