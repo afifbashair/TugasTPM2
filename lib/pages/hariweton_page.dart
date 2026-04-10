@@ -14,7 +14,7 @@ class _HariWetonPageState extends State<HariWetonPage> {
   String? error;
 
   final hariList = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-  final wetonList = ["Legi","Pahing","Pon","Wage","Kliwon"];
+  final wetonList = ["Kliwon","Legi","Pahing","Pon","Wage"];
 
   void hitung() {
     if (selectedDate == null) {
