@@ -11,56 +11,83 @@ class _UmurPageState extends State<UmurPage> {
   DateTime? lahir;
   String hasil = "";
   String? error;
+  TimeOfDay? waktu;
 
   // 📅 Format manual (tanpa intl)
   String formatTanggal(DateTime? date) {
-    if (date == null) return "Belum dipilih";
+  if (date == null) return "Belum dipilih";
 
-    const bulan = [
-      "Januari","Februari","Maret","April","Mei","Juni",
-      "Juli","Agustus","September","Oktober","November","Desember"
-    ];
+  const bulan = [
+    "Januari","Februari","Maret","April","Mei","Juni",
+    "Juli","Agustus","September","Oktober","November","Desember"
+  ];
 
-    return "${date.day} ${bulan[date.month - 1]} ${date.year}";
-  }
+  String jam = waktu != null
+      ? "${waktu!.hour.toString().padLeft(2, '0')}:${waktu!.minute.toString().padLeft(2, '0')}"
+      : "00:00";
+
+  return "${date.day} ${bulan[date.month - 1]} ${date.year} - $jam";
+}
 
   void hitung() {
-    if (lahir == null) {
-      setState(() => error = "Silakan pilih tanggal lahir");
-      return;
-    }
-
-    final now = DateTime.now();
-
-    if (lahir!.isAfter(now)) {
-      setState(() => error = "Tanggal tidak valid");
-      return;
-    }
-
-    int tahun = now.year - lahir!.year;
-    int bulan = now.month - lahir!.month;
-    int hari = now.day - lahir!.day;
-
-    if (hari < 0) {
-      bulan -= 1;
-      final lastMonth = DateTime(now.year, now.month, 0).day;
-      hari += lastMonth;
-    }
-
-    if (bulan < 0) {
-      tahun -= 1;
-      bulan += 12;
-    }
-
-    final diff = now.difference(lahir!);
-
-    setState(() {
-      hasil =
-          "$tahun Tahun\n$bulan Bulan\n$hari Hari\n\n"
-          "${diff.inHours} Jam\n${diff.inMinutes} Menit";
-      error = null;
-    });
+  if (lahir == null) {
+    setState(() => error = "Silakan pilih tanggal lahir");
+    return;
   }
+
+  final now = DateTime.now();
+
+  final lahirLengkap = DateTime(
+    lahir!.year,
+    lahir!.month,
+    lahir!.day,
+    waktu?.hour ?? 0,
+    waktu?.minute ?? 0,
+  );
+
+  if (lahirLengkap.isAfter(now)) {
+    setState(() => error = "Tanggal tidak valid");
+    return;
+  }
+
+  int tahun = now.year - lahirLengkap.year;
+  int bulan = now.month - lahirLengkap.month;
+  int hari = now.day - lahirLengkap.day;
+  int jam = now.hour - lahirLengkap.hour;
+  int menit = now.minute - lahirLengkap.minute;
+
+  // 🔁 koreksi menit
+  if (menit < 0) {
+    menit += 60;
+    jam -= 1;
+  }
+
+  // 🔁 koreksi jam
+  if (jam < 0) {
+    jam += 24;
+    hari -= 1;
+  }
+
+  // 🔁 koreksi hari
+  if (hari < 0) {
+    bulan -= 1;
+    final lastMonth = DateTime(now.year, now.month, 0).day;
+    hari += lastMonth;
+  }
+
+  // 🔁 koreksi bulan
+  if (bulan < 0) {
+    tahun -= 1;
+    bulan += 12;
+  }
+
+  setState(() {
+    hasil =
+        "$tahun Tahun $bulan Bulan $hari Hari\n"
+        "$jam Jam $menit Menit";
+    error = null;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +156,20 @@ class _UmurPageState extends State<UmurPage> {
                       },
                       icon: const Icon(Icons.date_range),
                       label: const Text("Pilih Tanggal Lahir"),
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        TimeOfDay? picked = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        setState(() => waktu = picked);
+                      },
+                      icon: const Icon(Icons.access_time),
+                      label: const Text("Pilih Jam Lahir"),
                     ),
 
                     if (error != null) ...[
