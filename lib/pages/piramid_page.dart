@@ -18,6 +18,8 @@ class _PiramidPageState extends State<PiramidPage> {
   double? luas;
   double? volume;
 
+  String? penjelasan;
+
   bool validasi() {
     bool valid = true;
 
@@ -62,15 +64,42 @@ class _PiramidPageState extends State<PiramidPage> {
     double l = double.parse(lebar.text);
     double t = double.parse(tinggi.text);
 
-    // 🔺 Hitung tinggi miring otomatis
     double s1 = sqrt(pow(l / 2, 2) + pow(t, 2));
     double s2 = sqrt(pow(p / 2, 2) + pow(t, 2));
 
     double alas = p * l;
 
+    double luasHasil = alas + (p * s1) + (l * s2);
+    double volumeHasil = (1 / 3) * alas * t;
+
     setState(() {
-      luas = alas + (p * s1) + (l * s2);
-      volume = (1 / 3) * alas * t;
+      luas = luasHasil;
+      volume = volumeHasil;
+
+      penjelasan = """
+1. Luas alas:
+   L = p × l = $p × $l = ${alas.toStringAsFixed(2)}
+
+2. Tinggi miring sisi lebar:
+   s1 = √((l/2)² + t²)
+      = √((${(l / 2).toStringAsFixed(2)})² + $t²)
+      = ${s1.toStringAsFixed(2)}
+
+3. Tinggi miring sisi panjang:
+   s2 = √((p/2)² + t²)
+      = √((${(p / 2).toStringAsFixed(2)})² + $t²)
+      = ${s2.toStringAsFixed(2)}
+
+4. Luas permukaan:
+   = alas + (p × s1) + (l × s2)
+   = ${alas.toStringAsFixed(2)} + (${p} × ${s1.toStringAsFixed(2)}) + (${l} × ${s2.toStringAsFixed(2)})
+   = ${luasHasil.toStringAsFixed(2)}
+
+5. Volume:
+   = 1/3 × alas × t
+   = 1/3 × ${alas.toStringAsFixed(2)} × $t
+   = ${volumeHasil.toStringAsFixed(2)}
+""";
     });
   }
 
@@ -82,6 +111,7 @@ class _PiramidPageState extends State<PiramidPage> {
     setState(() {
       luas = null;
       volume = null;
+      penjelasan = null;
       e1 = e2 = e3 = null;
     });
   }
@@ -118,7 +148,7 @@ class _PiramidPageState extends State<PiramidPage> {
       appBar: AppBar(
         title: const Text("Piramid Otomatis"),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [Colors.orange, Colors.deepOrange],
             ),
@@ -138,15 +168,15 @@ class _PiramidPageState extends State<PiramidPage> {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    Icon(Icons.change_history,
+                    const Icon(Icons.change_history,
                         size: 60, color: Colors.orange),
 
                     const SizedBox(height: 10),
 
                     const Text(
                       "Input 3 Nilai Saja",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
                     ),
 
                     const SizedBox(height: 20),
@@ -189,7 +219,8 @@ class _PiramidPageState extends State<PiramidPage> {
                                 ? "Luas belum dihitung"
                                 : "Luas: ${luas!.toStringAsFixed(2)}",
                             style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 8),
                           Text(
@@ -197,11 +228,39 @@ class _PiramidPageState extends State<PiramidPage> {
                                 ? "Volume belum dihitung"
                                 : "Volume: ${volume!.toStringAsFixed(2)}",
                             style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                     ),
+
+                    // 🔥 PENJELASAN
+                    if (penjelasan != null) ...[
+                      const SizedBox(height: 20),
+
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Penjelasan:",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.shade100,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          penjelasan!,
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ],
 
                     const SizedBox(height: 15),
 
@@ -210,7 +269,6 @@ class _PiramidPageState extends State<PiramidPage> {
                       child: Text(
                         "Catatan:\n"
                         "- Tinggi miring dihitung otomatis\n"
-                        "- Hanya perlu 3 input\n"
                         "- Gunakan angka positif",
                         style: TextStyle(
                           fontSize: 12,
